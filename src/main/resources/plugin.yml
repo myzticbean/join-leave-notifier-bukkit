@@ -1,0 +1,17 @@
+name: JoinLeaveNotifier
+version: ${project.version}
+main: com.github.myzticbean.joinleavenotifier.JoinLeaveNotifier
+api-version: '1.21'
+authors: [ myzticbean ]
+description: Displays customizable join and leave messages
+
+commands:
+  joinleavenotifier:
+    description: Reload the JoinLeaveNotifier configuration
+    usage: /joinleavenotifier reload
+    aliases: [jln]
+
+permissions:
+  joinleavenotifier.admin:
+    description: Allows reloading the JoinLeaveNotifier configuration
+    default: op
