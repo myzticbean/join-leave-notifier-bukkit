@@ -1,45 +1,45 @@
 player-join-messages:
-  - "&a&lWelcome back, &e%player%&a&l! &bWe missed you!"
-  - "&6Look who decided to grace us with their presence! It's &e%player%&6!"
-  - "&d%player% &5has joined the party! &dLet the fun begin!"
-  - "&eGuess who's back? Back again? &6%player%&e's back! Tell a friend!"
-  - "&b&lA wild &e%player% &b&lhas appeared!"
-  - "&aRoll out the red carpet! &e%player% &ahas arrived!"
-  - "&d✨ &e%player% &djust popped into existence! Magic? &d✨"
-  - "&6Attention everyone! &e%player% &6has entered the building!"
-  - "&bHold onto your hats! &e%player% &bjust swooped in!"
-  - "&aThe legend himself, &e%player%&a, has blessed us with their presence!"
-  - "&2The force is strong with &e%player%&2! Welcome back!"
-  - "&c&lRED ALERT! &e%player% &c&lhas invaded our server!"
-  - "&f&lBrace yourselves, &e%player% &f&lis coming!"
-  - "&3Did someone order a &e%player%&3? Because one just arrived!"
-  - "&5By the power of Grayskull! &e%player% &5has the power!"
-  - "&9Ladies and gentlemen, please welcome &e%player%&9!"
-  - "&e&lKABOOM! &6%player% &e&ljust exploded onto the scene!"
-  - "&2Groot would say: '&aI am &e%player%&2!' Welcome!"
-  - "&b&oThe prophecy was true! &e%player% &b&ohas returned!"
-  - "&d&lPrepare for trouble! &e%player% &d&lmakes it double!"
+  - '&7(&a+&7) &a&lWelcome back, &e%player%&a&l! &bWe missed you!'
+  - '&7(&a+&7) &6Look who decided to grace us with their presence! It''s &e%player%&6!'
+  - '&7(&a+&7) &d%player% &5has joined the party! &dLet the fun begin!'
+  - '&7(&a+&7) &eGuess who''s back? Back again? &6%player%&e''s back! Tell a friend!'
+  - '&7(&a+&7) &b&lA wild &e%player% &b&lhas appeared!'
+  - '&7(&a+&7) &aRoll out the red carpet! &e%player% &ahas arrived!'
+  - '&7(&a+&7) &d✨ &e%player% &djust popped into existence! Magic? &d✨'
+  - '&7(&a+&7) &6Attention everyone! &e%player% &6has entered the building!'
+  - '&7(&a+&7) &bHold onto your hats! &e%player% &bjust swooped in!'
+  - '&7(&a+&7) &aThe legend himself, &e%player%&a, has blessed us with their presence!'
+  - '&7(&a+&7) &2The force is strong with &e%player%&2! Welcome back!'
+  - '&7(&a+&7) &c&lRED ALERT! &e%player% &c&lhas invaded our server!'
+  - '&7(&a+&7) &f&lBrace yourselves, &e%player% &f&lis coming!'
+  - '&7(&a+&7) &3Did someone order a &e%player%&3? Because one just arrived!'
+  - '&7(&a+&7) &5By the power of Grayskull! &e%player% &5has the power!'
+  - '&7(&a+&7) &9Ladies and gentlemen, please welcome &e%player%&9!'
+  - '&7(&a+&7) &e&lKABOOM! &6%player% &e&ljust exploded onto the scene!'
+  - '&7(&a+&7) &2Groot would say: ''&aI am &e%player%&2!'' Welcome!'
+  - '&7(&a+&7) &b&oThe prophecy was true! &e%player% &b&ohas returned!'
+  - '&7(&a+&7) &d&lPrepare for trouble! &e%player% &d&lmakes it double!'
 
 player-leave-messages:
-  - "&c%player% &4has left the building!"
-  - "&eFarewell, &6%player%&e! We'll miss your shenanigans!"
-  - "&5%player% &dvanished into thin air! Magic or rage quit?"
-  - "&cAnd just like that, &4%player% &cwas gone... Until next time!"
-  - "&eWatch out! &6%player% &ejust ninja-vanished!"
-  - "&bLooks like &3%player% &bfound the escape hatch. Bye!"
-  - "&cBreaking News: &4%player% &chas mysteriously disappeared!"
-  - "&dOh no! &5%player% &djust got sucked into a black hole!"
-  - "&6%player% &ejust moonwalked out of the server. Smooth exit!"
-  - "&aIt's not goodbye, it's see you later, &2%player%&a!"
-  - "&7&oLegend says &e%player% &7&ois still searching for the logout button..."
-  - "&c&lABORT MISSION! &e%player% &c&lhas abandoned ship!"
-  - "&b%player% &3just became one with the Force. Goodbye, young Padawan!"
-  - "&6&lWHOOSH! &e%player% &6&ljust got yeeted out of the server!"
-  - "&dHouston, we have a problem. &e%player% &dhas left orbit!"
-  - "&2%player% &ahas gone to a better place... probably their bed."
-  - "&9&oThe server will remember &e%player%&9&o... until the next restart."
-  - "&5Beam me up, Scotty! &e%player% &5has been teleported away!"
-  - "&c&lWARNING: &e%player% &c&lhas rage quit. Approach with caution!"
-  - "&f&lPLOT TWIST: &e%player% &f&lwas the impostor all along!"
+  - '&7(&c-&7) &c%player% &4has left the building!'
+  - '&7(&c-&7) &eFarewell, &6%player%&e! We''ll miss your shenanigans!'
+  - '&7(&c-&7) &5%player% &dvanished into thin air! Magic or rage quit?'
+  - '&7(&c-&7) &cAnd just like that, &4%player% &cwas gone... Until next time!'
+  - '&7(&c-&7) &eWatch out! &6%player% &ejust ninja-vanished!'
+  - '&7(&c-&7) &bLooks like &3%player% &bfound the escape hatch. Bye!'
+  - '&7(&c-&7) &cBreaking News: &4%player% &chas mysteriously disappeared!'
+  - '&7(&c-&7) &dOh no! &5%player% &djust got sucked into a black hole!'
+  - '&7(&c-&7) &6%player% &ejust moonwalked out of the server. Smooth exit!'
+  - '&7(&c-&7) &aIt''s not goodbye, it''s see you later, &2%player%&a!'
+  - '&7(&c-&7) &7&oLegend says &e%player% &7&ois still searching for the logout button...'
+  - '&7(&c-&7) &c&lABORT MISSION! &e%player% &c&lhas abandoned ship!'
+  - '&7(&c-&7) &b%player% &3just became one with the Force. Goodbye, young Padawan!'
+  - '&7(&c-&7) &6&lWHOOSH! &e%player% &6&ljust got yeeted out of the server!'
+  - '&7(&c-&7) &dHouston, we have a problem. &e%player% &dhas left orbit!'
+  - '&7(&c-&7) &2%player% &ahas gone to a better place... probably their bed.'
+  - '&7(&c-&7) &9&oThe server will remember &e%player%&9&o... until the next restart.'
+  - '&7(&c-&7) &5Beam me up, Scotty! &e%player% &5has been teleported away!'
+  - '&7(&c-&7) &c&lWARNING: &e%player% &c&lhas rage quit. Approach with caution!'
+  - '&7(&c-&7) &f&lPLOT TWIST: &e%player% &f&lwas the impostor all along!'
 
 config-version: 1
