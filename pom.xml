@@ -14,7 +14,7 @@
     <properties>
         <java.version>21</java.version>
         <lombok.version>1.18.34</lombok.version>
-        <mcdevtools.version>1.0.2-alpha</mcdevtools.version>
+        <mcdevtools.version>1.0.7</mcdevtools.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -94,7 +94,6 @@
             <groupId>com.github.myzticbean</groupId>
             <artifactId>MCDevTools</artifactId>
             <version>${mcdevtools.version}</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

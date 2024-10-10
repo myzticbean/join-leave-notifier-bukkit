@@ -4,6 +4,7 @@ import com.github.myzticbean.joinleavenotifier.command.ReloadCommand;
 import com.github.myzticbean.joinleavenotifier.config.ConfigLoader;
 import com.github.myzticbean.joinleavenotifier.config.ConfigProvider;
 import com.github.myzticbean.joinleavenotifier.processor.MessageProcessor;
+import io.myzticbean.mcdevtools.MCDevTools;
 import io.myzticbean.mcdevtools.events.processor.EventRegistrar;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,7 @@ public final class JoinLeaveNotifier extends JavaPlugin {
         // Plugin startup logic
         setupConfig(this);
         setupMessageProcessor();
+        MCDevTools.setup(this);
         EventRegistrar.registerEvents(this, "com.github.myzticbean.joinleavenotifier.listener");
         // Register the reload command
         getCommand("joinleavenotifier").setExecutor(new ReloadCommand(this));
