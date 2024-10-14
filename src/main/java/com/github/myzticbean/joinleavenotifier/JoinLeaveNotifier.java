@@ -12,18 +12,23 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class JoinLeaveNotifier extends JavaPlugin {
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private static ConfigProvider configProvider;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private static MessageProcessor messageProcessor;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
+        // Initialize MCDevTools
+        MCDevTools.initialize(this);
         setupConfig(this);
+        // Setup message processor
         setupMessageProcessor();
-        MCDevTools.setup(this);
+        // Register event listeners
         EventRegistrar.registerEvents(this, "com.github.myzticbean.joinleavenotifier.listener");
         // Register the reload command
         getCommand("joinleavenotifier").setExecutor(new ReloadCommand(this));
@@ -33,6 +38,11 @@ public final class JoinLeaveNotifier extends JavaPlugin {
         messageProcessor = new MessageProcessor(configProvider);
     }
 
+    /**
+     * Setup the config for the plugin
+     * 
+     * @param plugin The plugin instance
+     */
     private static void setupConfig(JavaPlugin plugin) {
         ConfigLoader configLoader = new ConfigLoader(plugin);
         configLoader.loadConfig();

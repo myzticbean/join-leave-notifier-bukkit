@@ -4,13 +4,11 @@ import lombok.Getter;
 
 import java.util.List;
 
+@Getter
 public class ConfigProvider {
 
-    @Getter
     private final int configVersion;
-    @Getter
     private final List<String> playerJoinMessages;
-    @Getter
     private final List<String> playerLeaveMessages;
 
     public ConfigProvider(ConfigLoader configLoader) {

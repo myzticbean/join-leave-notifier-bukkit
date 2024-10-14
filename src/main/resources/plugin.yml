@@ -5,6 +5,10 @@ api-version: '1.21'
 authors: [ myzticbean ]
 description: Displays customizable join and leave messages
 
+softdepend:
+  - SuperVanish
+  - PremiumVanish
+
 commands:
   joinleavenotifier:
     description: Reload the JoinLeaveNotifier configuration

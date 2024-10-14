@@ -6,7 +6,7 @@
 
     <groupId>com.github.myzticbean</groupId>
     <artifactId>JoinLeaveNotifier</artifactId>
-    <version>1.0.1-RELEASE</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
 
     <name>JoinLeaveNotifier</name>
@@ -14,7 +14,7 @@
     <properties>
         <java.version>21</java.version>
         <lombok.version>1.18.34</lombok.version>
-        <mcdevtools.version>1.0.7</mcdevtools.version>
+        <mcdevtools.version>1.0.8</mcdevtools.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -50,8 +50,35 @@
                     <!-- Below path is where your plugin jar will be copied automatically upon build, comment out if on a Mac -->
                     <!-- <outputDirectory>D:\${user.name}\MCServers\MCServer_1.20.1\plugins</outputDirectory> -->
                     <!-- Comment out if on a PC -->
-<!--                    <outputDirectory>/Users/${user.name}/IdeaProjects/MCServer_1.21/plugins</outputDirectory>-->
+                    <!--<outputDirectory>/Users/${user.name}/IdeaProjects/MCServer_1.21/plugins</outputDirectory>-->
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>readme</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/doc</directory>
+                                    <includes>
+                                        <include>README.md</include>
+                                    </includes>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                            <encoding>UTF-8</encoding>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
         <resources>
@@ -94,6 +121,12 @@
             <groupId>com.github.myzticbean</groupId>
             <artifactId>MCDevTools</artifactId>
             <version>${mcdevtools.version}</version>
+        </dependency>
+        <!-- SuperVanish -->
+        <dependency>
+            <groupId>com.github.LeonMangler</groupId>
+            <artifactId>SuperVanish</artifactId>
+            <version>6.2.18-3</version>
         </dependency>
     </dependencies>
 </project>

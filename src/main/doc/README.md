@@ -1,4 +1,4 @@
-# JoinLeaveNotifier `v1.0.2`
+# JoinLeaveNotifier `v${project.version}`
 
 JoinLeaveNotifier is a customizable Bukkit/Spigot plugin that displays unique and engaging messages when players join or leave your Minecraft server.
 
@@ -12,7 +12,7 @@ JoinLeaveNotifier is a customizable Bukkit/Spigot plugin that displays unique an
 
 ## Installation
 
-1. Download the `JoinLeaveNotifier-1.0.2.jar` file.
+1. Download the `JoinLeaveNotifier-${project.version}.jar` file.
 2. Place the jar file in your server's `plugins` folder.
 3. Restart your server or use a plugin manager to load the plugin.
 4. The plugin will generate a default `config.yml` file on first run.
