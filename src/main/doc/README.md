@@ -1,12 +1,17 @@
 # JoinLeaveNotifier `v${project.version}`
 
-JoinLeaveNotifier is a customizable Bukkit/Spigot plugin that displays unique and engaging messages when players join or leave your Minecraft server.
+JoinLeaveNotifier is a customizable Paper plugin that displays unique and engaging messages when players join or leave your Minecraft server.
+
+Requires **Paper 26.2+** and **Java 25+**.
 
 ## Features
 
 - Customizable join and leave messages
-- Random message selection for variety
-- Color code support for vibrant messages
+- Separate messages for a player's very first join
+- Random message selection that avoids repeating recent messages
+- Legacy `&` color codes and `&#rrggbb` hex colors
+- [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) placeholders (optional)
+- Vanished players (SuperVanish, PremiumVanish, EssentialsX, …) and players with `joinleavenotifier.silent` are never announced
 - Easy configuration through `config.yml`
 - Reload command for on-the-fly changes
 
@@ -22,19 +27,28 @@ JoinLeaveNotifier is a customizable Bukkit/Spigot plugin that displays unique an
 Edit the `config.yml` file in the `plugins/JoinLeaveNotifier` folder to customize your messages:
 
 ```yaml
+join-enabled: true
+leave-enabled: true
+
 player-join-messages:
   - "&a&lWelcome back, &e%player%&a&l! &bWe missed you!"
   - "&6Look who decided to grace us with their presence! It's &e%player%&6!"
   # Add more join messages here...
 
+# Shown instead of player-join-messages the first time a player ever joins. Leave empty to reuse the join messages.
+player-first-join-messages:
+  - "&d&lWelcome to the server, &e%player%&d&l! &bMake yourself at home!"
+
 player-leave-messages:
   - "&c%player% &4has left the building!"
   - "&eFarewell, &6%player%&e! We'll miss your shenanigans!"
   # Add more leave messages here...
-config-version: 1
+config-version: 2
 ```
-- Use `%player%` as a placeholder for the player's name.
-- Use color codes with the `&` symbol (e.g., &a for green, &b for aqua, etc.).
+- Use `%player%` as a placeholder for the player's name. Any [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) placeholder (e.g. `%player_displayname%`, `%vault_prefix%`) works when PlaceholderAPI is installed.
+- Use color codes with the `&` symbol (e.g., `&a` for green, `&b` for aqua) or hex colors like `&#ff8800`.
+- Set `join-enabled` / `leave-enabled` to `false` to silence that side entirely.
+- Configs from older versions are upgraded automatically; new keys are added with their defaults.
 
 ## Commands
 
@@ -47,6 +61,7 @@ config-version: 1
 | Permission                | Description                      | Default  |
 |---------------------------|----------------------------------|----------|
 | `joinleavenotifier.admin` | Allows use of the reload command | `op`     |
+| `joinleavenotifier.silent` | Join/leave without a broadcast (staff, alts) | `false`  |
 
 ## Support
 
