@@ -1,11 +1,12 @@
 name: JoinLeaveNotifier
 version: ${project.version}
 main: com.github.myzticbean.joinleavenotifier.JoinLeaveNotifier
-api-version: '1.21'
+api-version: '26.2'
 authors: [ myzticbean ]
 description: Displays customizable join and leave messages
 
 softdepend:
+  - PlaceholderAPI
   - SuperVanish
   - PremiumVanish
 
@@ -19,3 +20,6 @@ permissions:
   joinleavenotifier.admin:
     description: Allows reloading the JoinLeaveNotifier configuration
     default: op
+  joinleavenotifier.silent:
+    description: Players with this permission join and leave without a broadcast
+    default: false

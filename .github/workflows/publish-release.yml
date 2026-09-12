@@ -1,66 +1,144 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 name: Publish Release
 
 on:
-  push:
-    branches: [ "master" ]
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Type of build to publish'
+        required: true
+        type: choice
+        options:
+          - snapshot
+          - release
+        default: snapshot
 
 permissions:
   contents: write
 
 jobs:
   build:
+    name: Build JAR
     runs-on: ubuntu-latest
+    outputs:
+      full_version: ${{ steps.build_version.outputs.full_version }}
+      version_type: ${{ steps.build_version.outputs.version_type }}
+      game_version: ${{ steps.build_version.outputs.game_version }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK 22
+      - name: Set up JDK 25
         uses: actions/setup-java@v4
         with:
-          java-version: '22'
+          java-version: '25'
           distribution: 'temurin'
           cache: maven
+      - name: Compute build version
+        id: build_version
+        run: |
+          base_version=$(mvn -q -Dexpression=project.version -DforceStdout help:evaluate)
+          paper_api_version=$(mvn -q -Dexpression=paper-api.version -DforceStdout help:evaluate)
+          game_version=$(echo "$paper_api_version" | grep -oE '^[0-9]+(\.[0-9]+)*')
+
+          if [[ "${{ inputs.release_type }}" == "snapshot" ]]; then
+            case "${{ github.ref_name }}" in
+              snapshot/*) ;;
+              *)
+                echo "release_type is 'snapshot' but the workflow was triggered from branch '${{ github.ref_name }}', not a snapshot/** branch" >&2
+                exit 1
+                ;;
+            esac
+            if [[ "$base_version" != *-SNAPSHOT ]]; then
+              echo "release_type is 'snapshot' but pom.xml version ($base_version) has no -SNAPSHOT suffix" >&2
+              exit 1
+            fi
+            full_version="${base_version}-${{ github.run_number }}"
+            version_type="beta"
+          else
+            if [[ "$base_version" == *-SNAPSHOT ]]; then
+              echo "release_type is 'release' but pom.xml version ($base_version) still has a -SNAPSHOT suffix" >&2
+              exit 1
+            fi
+            full_version="$base_version"
+            version_type="release"
+          fi
+
+          mvn versions:set -DnewVersion="$full_version" -DgenerateBackupPoms=false
+
+          echo "full_version=$full_version" >> "$GITHUB_OUTPUT"
+          echo "version_type=$version_type" >> "$GITHUB_OUTPUT"
+          echo "game_version=$game_version" >> "$GITHUB_OUTPUT"
+      - name: Extract changelog from CHANGELOG.md
+        id: changelog
+        run: |
+          # Takes everything between the first "## " heading and the next one,
+          # so CHANGELOG.md stays the single source of truth for release notes.
+          body=$(awk '
+            /^## / { count++; next }
+            count==1 { print }
+            count==2 { exit }
+          ' CHANGELOG.md | sed '/./,$!d')
+
+          if [[ -z "${body// /}" ]]; then
+            echo "Could not extract a changelog section from CHANGELOG.md" >&2
+            exit 1
+          fi
+
+          delimiter="CHANGELOG_EOF_$RANDOM$RANDOM"
+          echo "changelog<<$delimiter" >> "$GITHUB_OUTPUT"
+          echo "$body" >> "$GITHUB_OUTPUT"
+          echo "$delimiter" >> "$GITHUB_OUTPUT"
       - name: Build with Maven
         run: mvn -B package --file pom.xml
-      # Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
-      - name: Update dependency graph
-        uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
-  release:
-    name: Setup Environment, Build JAR and Release Project
+      - name: Upload JAR as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: JoinLeaveNotifier
+          path: target/JoinLeaveNotifier-*.jar
+
+  github-release:
+    name: Create GitHub Release
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Automatic Release
-        uses: Fulminazzo/java-automatic-release@v2
+      - name: Download JAR artifact
+        uses: actions/download-artifact@v4
         with:
-          java-version: '22'
+          name: JoinLeaveNotifier
+          path: target
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.build.outputs.full_version }}
+          name: ${{ needs.build.outputs.full_version }}
+          body: ${{ needs.build.outputs.changelog }}
+          files: target/JoinLeaveNotifier-*.jar
+          prerelease: ${{ needs.build.outputs.version_type == 'beta' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPOSITORY_NAME: ${{ github.event.repository.name }}
-          # Message specified in the commit
-          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-      - name: Rename Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Get the latest release
-          release_id=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-            "https://api.github.com/repos/${{ github.repository }}/releases/latest" | \
-            jq -r .id)
-          
-          # Extract version from the release name
-          version=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-            "https://api.github.com/repos/${{ github.repository }}/releases/latest" | \
-            jq -r .name | sed 's/.*[[:space:]]//')
-          
-          # Update the release name to just the version
-          curl -X PATCH -H "Authorization: token $GITHUB_TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${{ github.repository }}/releases/$release_id" \
-            -d "{\"name\":\"$version\"}"
+
+  modrinth-publish:
+    name: Publish to Modrinth
+    needs: build
+    runs-on: ubuntu-latest
+    environment: MODRINTH
+    steps:
+      - name: Download JAR artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: JoinLeaveNotifier
+          path: target
+      - name: Publish to Modrinth
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-id: s47ATOIz
+          modrinth-token: ${{ secrets.MODRINTH_PAT }}
+          files: target/JoinLeaveNotifier-*.jar
+          name: ${{ needs.build.outputs.full_version }}
+          version: ${{ needs.build.outputs.full_version }}
+          version-type: ${{ needs.build.outputs.version_type }}
+          changelog: ${{ needs.build.outputs.changelog }}
+          loaders: |
+            paper
+            purpur
+          game-versions: |
+            ${{ needs.build.outputs.game_version }}

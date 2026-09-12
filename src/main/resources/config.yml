@@ -1,3 +1,11 @@
+# JoinLeaveNotifier
+# Placeholders: %player% = player name. PlaceholderAPI placeholders work if PAPI is installed.
+# Colors: &a legacy codes and &#rrggbb hex.
+# Players with the joinleavenotifier.silent permission, or vanished players, are never announced.
+
+join-enabled: true
+leave-enabled: true
+
 player-join-messages:
   - '&7(&a+&7) &a&lWelcome back, &e%player%&a&l! &bWe missed you!'
   - '&7(&a+&7) &6Look who decided to grace us with their presence! It''s &e%player%&6!'
@@ -19,6 +27,14 @@ player-join-messages:
   - '&7(&a+&7) &2Groot would say: ''&aI am &e%player%&2!'' Welcome!'
   - '&7(&a+&7) &b&oThe prophecy was true! &e%player% &b&ohas returned!'
   - '&7(&a+&7) &d&lPrepare for trouble! &e%player% &d&lmakes it double!'
+
+# Shown instead of player-join-messages the first time a player ever joins. Leave empty to reuse the join messages.
+player-first-join-messages:
+  - '&7(&a+&7) &d&lWelcome to the server, &e%player%&d&l! &bMake yourself at home!'
+  - '&7(&a+&7) &6A new challenger approaches! Everyone say hi to &e%player%&6!'
+  - '&7(&a+&7) &aFresh face alert! &e%player% &ajust joined for the very first time!'
+  - '&7(&a+&7) &b&lNEW PLAYER! &e%player% &b&lhas spawned into our world. Be nice!'
+  - '&7(&a+&7) &5The prophecy foretold a newcomer... &e%player%&5, is it you?'
 
 player-leave-messages:
   - '&7(&c-&7) &c%player% &4has left the building!'
@@ -42,4 +58,4 @@ player-leave-messages:
   - '&7(&c-&7) &c&lWARNING: &e%player% &c&lhas rage quit. Approach with caution!'
   - '&7(&c-&7) &f&lPLOT TWIST: &e%player% &f&lwas the impostor all along!'
 
-config-version: 1
+config-version: 2

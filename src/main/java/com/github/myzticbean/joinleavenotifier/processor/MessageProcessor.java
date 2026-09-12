@@ -1,88 +1,76 @@
 package com.github.myzticbean.joinleavenotifier.processor;
 
-import com.github.myzticbean.joinleavenotifier.config.ConfigProvider;
-import io.myzticbean.mcdevtools.colors.ColorTranslator;
-import io.myzticbean.mcdevtools.log.Logger;
+import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.Plugin;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MessageProcessor {
 
-    private final ConfigProvider configProvider;
-    private final Random random;
-    private final Queue<String> recentJoinMessages;
-    private final Queue<String> recentLeaveMessages;
     private static final int RECENT_MESSAGE_LIMIT = 10;
+    private static final LegacyComponentSerializer COLORS =
+            LegacyComponentSerializer.builder().character('&').hexColors().build();
 
-    public MessageProcessor(ConfigProvider configProvider) {
-        this.configProvider = configProvider;
-        this.random = new Random();
-        this.recentJoinMessages = new LinkedList<>();
-        this.recentLeaveMessages = new LinkedList<>();
+    private final Plugin plugin;
+    private final Deque<String> recentJoin = new ArrayDeque<>();
+    private final Deque<String> recentFirstJoin = new ArrayDeque<>();
+    private final Deque<String> recentLeave = new ArrayDeque<>();
+
+    public MessageProcessor(Plugin plugin) {
+        this.plugin = plugin;
     }
 
-    public void processJoinMessage(Player player) {
-        Logger.info("Primary: " + Bukkit.isPrimaryThread());
-        if(isPlayerVanished(player)) return;
-        String message = getRandomMessage(configProvider.getPlayerJoinMessages(), recentJoinMessages);
-        broadcastMessage(formatMessage(message, player));
-    }
-
-    public String getRandomJoinMessage(Player player) {
-        return formatMessage(getRandomMessage(configProvider.getPlayerJoinMessages(), recentJoinMessages), player);
-    }
-
-    public String getRandomLeaveMessage(Player player) {
-        return formatMessage(getRandomMessage(configProvider.getPlayerLeaveMessages(), recentLeaveMessages), player);
-    }
-
-    public void processLeaveMessage(Player player) {
-        Logger.info("Primary: " + Bukkit.isPrimaryThread());
-        if(isPlayerVanished(player)) return;
-        String message = getRandomMessage(configProvider.getPlayerLeaveMessages(), recentLeaveMessages);
-        broadcastMessage(formatMessage(message, player));
-    }
-
-    private String getRandomMessage(List<String> messages, Queue<String> recentMessages) {
-        List<String> availableMessages = new ArrayList<>(messages);
-        availableMessages.removeAll(recentMessages);
-
-        if (availableMessages.isEmpty()) {
-            availableMessages = new ArrayList<>(messages);
+    /** @return the join broadcast for this player, or null to suppress it */
+    public Component joinMessage(Player player) {
+        if (!plugin.getConfig().getBoolean("join-enabled", true) || isSilent(player)) return null;
+        List<String> firstJoin = plugin.getConfig().getStringList("player-first-join-messages");
+        if (!player.hasPlayedBefore() && !firstJoin.isEmpty()) {
+            return format(pick(firstJoin, recentFirstJoin, ThreadLocalRandom.current()), player);
         }
+        return format(pick(plugin.getConfig().getStringList("player-join-messages"), recentJoin, ThreadLocalRandom.current()), player);
+    }
 
-        String chosenMessage = availableMessages.get(random.nextInt(availableMessages.size()));
+    /** @return the leave broadcast for this player, or null to suppress it */
+    public Component leaveMessage(Player player) {
+        if (!plugin.getConfig().getBoolean("leave-enabled", true) || isSilent(player)) return null;
+        return format(pick(plugin.getConfig().getStringList("player-leave-messages"), recentLeave, ThreadLocalRandom.current()), player);
+    }
 
-        recentMessages.offer(chosenMessage);
-        if (recentMessages.size() > RECENT_MESSAGE_LIMIT) {
-            recentMessages.poll();
+    /** Picks a random message not in {@code recent} (any message if all are recent) and records it. */
+    static String pick(List<String> messages, Deque<String> recent, Random random) {
+        if (messages.isEmpty()) return "";
+        List<String> available = new ArrayList<>(messages);
+        available.removeAll(recent);
+        if (available.isEmpty()) available = messages;
+        String chosen = available.get(random.nextInt(available.size()));
+        recent.addLast(chosen);
+        if (recent.size() > RECENT_MESSAGE_LIMIT) recent.pollFirst();
+        return chosen;
+    }
+
+    private Component format(String message, Player player) {
+        if (message.isEmpty()) return null;
+        message = message.replace("%player%", player.getName());
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            message = PlaceholderAPI.setPlaceholders(player, message);
         }
-
-        return chosenMessage;
+        // PAPI output uses section signs; normalise so one serializer handles both.
+        return COLORS.deserialize(message.replace(LegacyComponentSerializer.SECTION_CHAR, '&'));
     }
 
-    private String formatMessage(String message, Player player) {
-        return ColorTranslator.translateColorCodes(message.replace("%player%", player.getName()));
+    // "vanished" metadata is set by SuperVanish, PremiumVanish, EssentialsX and most other vanish plugins.
+    private static boolean isSilent(Player player) {
+        return player.hasPermission("joinleavenotifier.silent")
+                || player.getMetadata("vanished").stream().anyMatch(MetadataValue::asBoolean);
     }
-
-    private void broadcastMessage(String message) {
-        Bukkit.getServer().getOnlinePlayers().forEach(p -> p.sendMessage(message));
-    }
-
-    // Check vanished players from SuperVanish
-    // https://www.spigotmc.org/resources/supervanish-be-invisible.1331/
-    private boolean isPlayerVanished(Player player) {
-        try {
-            player.getMetadata("vanished").forEach(i -> Logger.info(i.asString()));
-        } finally {
-        }
-        for (MetadataValue meta : player.getMetadata("vanished")) {
-            if (meta.asBoolean()) return true;
-        }
-        return false;
-    }
-
 }
